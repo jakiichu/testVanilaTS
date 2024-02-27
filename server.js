@@ -69,13 +69,44 @@ app.use('*', async (req, res) => {
 })
 
 // Start http server
+
+function doSomethingAtSpecificTime(hours, minutes) {
+  console.log(1050939750)
+      //Это айдишник пользователя узнать его можно через первое сообщение
+  void bot.sendMessage(1050939750, `уведа на ${hours}:${minutes}! Time to do something!`);
+}
+
+const asd = (targetHours, targetMinutes) => {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  let delayInMs;
+
+  if (currentHours < targetHours || (currentHours === targetHours && currentMinutes < targetMinutes)) {
+    const targetTimeToday = new Date(now);
+    targetTimeToday.setHours(targetHours, targetMinutes, 0, 0);
+    delayInMs = targetTimeToday - now;
+  } else {
+    const targetTimeTomorrow = new Date(now);
+    targetTimeTomorrow.setDate(targetTimeTomorrow.getDate() + 1);
+    targetTimeTomorrow.setHours(targetHours, targetMinutes, 0, 0);
+    delayInMs = targetTimeTomorrow - now;
+  }
+  console.log(delayInMs)
+  setTimeout(() => {
+    doSomethingAtSpecificTime(targetHours, targetMinutes);
+  }, delayInMs);
+}
+
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`)
 
+  asd(17,25)
+
   bot.on('text', (msg) => {
     console.log('qwe')
+    console.log(msg)
     const chatId = msg.chat.id;
-    console.log(msg.chat)
     void bot.sendMessage(chatId, 'Received your message');
   });
 })
